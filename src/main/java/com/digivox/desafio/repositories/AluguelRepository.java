@@ -8,8 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.digivox.desafio.model.Aluguel;
 import com.digivox.desafio.model.Cliente;
-import com.digivox.desafio.model.Reserva;
 import com.digivox.desafio.model.Livro;
 
 /**
@@ -21,13 +21,13 @@ import com.digivox.desafio.model.Livro;
  * - 20/10/2020 Renan Costa Criação
  */
 @Repository
-public interface ReservaRepository extends JpaRepository<Reserva, Integer> {
-	Reserva findById(Long id);
-	List<Reserva> findByCliente(Cliente cliente);
-	List<Reserva> findByLivro(Livro livro);
+public interface AluguelRepository extends JpaRepository<Aluguel, Integer> {
+	Aluguel findById(Long id);
+	List<Aluguel> findByCliente(Cliente cliente);
+	List<Aluguel> findByLivro(Livro livro);
 	
 	@Query(value="select * from reserva r where data_inicial >=:segunda and data_inicial <=:domingo or data_final >=:segunda and data_final <=:domingo ",nativeQuery=true)
-	List<Reserva> findByWeek(@Param("segunda")LocalDate segunda,@Param("domingo") LocalDate domingo); 
-	 
+	List<Aluguel> findByWeek(@Param("segunda")LocalDate segunda,@Param("domingo") LocalDate domingo); 
+	
 	Integer deleteById(Long id);
 }

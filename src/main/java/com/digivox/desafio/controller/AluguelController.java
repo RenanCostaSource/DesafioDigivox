@@ -18,73 +18,72 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.digivox.desafio.model.Aluguel;
+import com.digivox.desafio.model.AluguelRequest;
 import com.digivox.desafio.model.Cliente;
 import com.digivox.desafio.model.Livro;
-import com.digivox.desafio.model.Reserva;
-import com.digivox.desafio.model.ReservaRequest;
+import com.digivox.desafio.repositories.AluguelRepository;
 import com.digivox.desafio.repositories.ClienteRepository;
 import com.digivox.desafio.repositories.LivroRepository;
-import com.digivox.desafio.repositories.ReservaRepository;
 
 /**
  * Desafio Digivox - 19/10/2020
  * Candidato: Renan Costa
- * Arquivo: Controller para acões de Reserva
+ * Arquivo: Controller para acões de Aluguel
  * 
  * Histórico de Alteraçôes:
  * - 20/10/2020 Renan Costa Criação
  */
 
 @RestController
-@RequestMapping(value= {"/reserva"})
-public class ReservaController {
+@RequestMapping(value= {"/aluguel"})
+public class AluguelController {
 	@Autowired
 	LivroRepository livroRepo;
 	@Autowired
 	ClienteRepository clienteRepo;
 	@Autowired
-	ReservaRepository reservaRepo;
+	AluguelRepository aluguelRepo;
 	
 	@GetMapping(value="/all")
-	public ResponseEntity <List<Reserva>> getAll(){
+	public ResponseEntity <List<Aluguel>> getAll(){
 		HttpHeaders httpHeaders = new HttpHeaders();
 		
-		List<Reserva> todasReservas =  reservaRepo.findAll();
+		List<Aluguel> todosAlugueis =  aluguelRepo.findAll();
 		
-		return new ResponseEntity <List<Reserva>>(todasReservas, httpHeaders, HttpStatus.OK);
+		return new ResponseEntity <List<Aluguel>>(todosAlugueis, httpHeaders, HttpStatus.OK);
 	}
 	
 	@GetMapping(value="/{id}")
 	public ResponseEntity <?> getOne(@PathVariable("id") Long id){
 		HttpHeaders httpHeaders = new HttpHeaders();
-		Reserva reserva = reservaRepo.findById(id);
-		if(reserva == null) {
-			return new ResponseEntity <>("Reserva não cadastrada", httpHeaders, HttpStatus.NOT_FOUND);
+		Aluguel aluguel = aluguelRepo.findById(id);
+		if(aluguel == null) {
+			return new ResponseEntity <>("Aluguel não cadastrado", httpHeaders, HttpStatus.NOT_FOUND);
 		}
 		
-		return new ResponseEntity <Reserva>(reserva, httpHeaders, HttpStatus.OK);
+		return new ResponseEntity <Aluguel>(aluguel, httpHeaders, HttpStatus.OK);
 	}
 	
 	@PostMapping
-	public ResponseEntity <?> postOne(@RequestBody ReservaRequest newReserva){
+	public ResponseEntity <?> postOne(@RequestBody AluguelRequest newAluguel){
 		HttpHeaders httpHeaders = new HttpHeaders();
 		
-		if(newReserva.getDataInicial()!=null && newReserva.getDataFinal()!=null && newReserva.getClienteId()!=-1 && newReserva.getLivroId()!=-1) {
-			Cliente cliente = clienteRepo.findById(newReserva.getClienteId());
+		if( newAluguel.getDataFinal()!=null && newAluguel.getClienteId()!=-1 && newAluguel.getLivroId()!=-1) {
+			Cliente cliente = clienteRepo.findById(newAluguel.getClienteId());
 			if (cliente==null) {
 				return new ResponseEntity <>("Cliente não cadastrado", httpHeaders, HttpStatus.NOT_FOUND);
 			}
-			Livro livro = livroRepo.findById(newReserva.getLivroId());
+			Livro livro = livroRepo.findById(newAluguel.getLivroId());
 			if (livro == null) {
 				return new ResponseEntity <>("Livro não cadastrado", httpHeaders, HttpStatus.NOT_FOUND);
 			}
 			try {
 				
-				Reserva ReservaToDB = new Reserva(
-						LocalDate.of(newReserva.getDataInicial()[0], newReserva.getDataInicial()[1], newReserva.getDataInicial()[2]),
-						LocalDate.of(newReserva.getDataFinal()[0], newReserva.getDataFinal()[1], newReserva.getDataFinal()[2]),
+				Aluguel AluguelToDB = new Aluguel(
+						LocalDate.of(newAluguel.getDataFinal()[0], newAluguel.getDataFinal()[1], newAluguel.getDataFinal()[2]),
 						cliente,livro);
-				reservaRepo.save(ReservaToDB);
+				aluguelRepo.save(AluguelToDB);
 				return new ResponseEntity <>("Criado com sucesso", httpHeaders, HttpStatus.CREATED);
 			} catch(Exception e) {
 				e.printStackTrace();
@@ -95,28 +94,28 @@ public class ReservaController {
 		}	
 	}
 	@PutMapping
-	public ResponseEntity <?> updateOne(@RequestBody ReservaRequest newReserva){
+	public ResponseEntity <?> updateOne(@RequestBody AluguelRequest newAluguel){
 		HttpHeaders httpHeaders = new HttpHeaders();
 		
-		if(newReserva.getDataInicial()!=null && newReserva.getDataFinal()!=null && newReserva.getClienteId()!=-1 && newReserva.getLivroId()!=-1 && newReserva.getId()!=null) {
-			Reserva doesExist = reservaRepo.findById(newReserva.getId());
-			if(doesExist == null) {
-				return new ResponseEntity <>("Reserva não cadastrada", httpHeaders, HttpStatus.NOT_FOUND);
+		if( newAluguel.getDataFinal()!=null && newAluguel.getClienteId()!=-1 && newAluguel.getLivroId()!=-1 && newAluguel.getId()!=null) {
+			Aluguel existente = aluguelRepo.findById(newAluguel.getId());
+			if(existente == null) {
+				return new ResponseEntity <>("Aluguel não cadastrado", httpHeaders, HttpStatus.NOT_FOUND);
 			}
-			Cliente cliente = clienteRepo.findById(newReserva.getClienteId());
+			Cliente cliente = clienteRepo.findById(newAluguel.getClienteId());
 			if (cliente==null) {
 				return new ResponseEntity <>("Cliente não cadastrado", httpHeaders, HttpStatus.NOT_FOUND);
 			}
-			Livro livro = livroRepo.findById(newReserva.getLivroId());
+			Livro livro = livroRepo.findById(newAluguel.getLivroId());
 			if (livro == null) {
 				return new ResponseEntity <>("Livro não cadastrado", httpHeaders, HttpStatus.NOT_FOUND);
 			}
 			try {
-				Reserva ReservaToDB = new Reserva(
-						LocalDate.of(newReserva.getDataInicial()[0], newReserva.getDataInicial()[1], newReserva.getDataInicial()[2]),
-						LocalDate.of(newReserva.getDataFinal()[0], newReserva.getDataFinal()[1], newReserva.getDataFinal()[2]),
+				Aluguel AluguelToDB = new Aluguel(newAluguel.getId(),
+						existente.getData_inicial(),
+						LocalDate.of(newAluguel.getDataFinal()[0], newAluguel.getDataFinal()[1], newAluguel.getDataFinal()[2]),
 						cliente,livro);
-				reservaRepo.save(ReservaToDB);
+				aluguelRepo.save(AluguelToDB);
 				return new ResponseEntity <>("Atualizado com sucesso", httpHeaders, HttpStatus.CREATED);
 			} catch(Exception e) {
 				e.printStackTrace();
@@ -130,20 +129,20 @@ public class ReservaController {
 	@DeleteMapping(value="/{id}")
 	public ResponseEntity <?> deleteOne(@PathVariable("id") Long id){
 		HttpHeaders httpHeaders = new HttpHeaders();
-		Reserva doesExist = reservaRepo.findById(id);
+		Aluguel doesExist = aluguelRepo.findById(id);
 		if(doesExist == null) {
-			return new ResponseEntity <>("Reserva não cadastrada", httpHeaders, HttpStatus.NOT_FOUND);
+			return new ResponseEntity <>("Aluguel não cadastrado", httpHeaders, HttpStatus.NOT_FOUND);
 		}
-		reservaRepo.deleteById(id);
+		aluguelRepo.deleteById(id);
 		
-		return new ResponseEntity <>("Reserva deletada com sucesso", httpHeaders, HttpStatus.OK);
+		return new ResponseEntity <>("Aluguel deletado com sucesso", httpHeaders, HttpStatus.OK);
 	}
 	
 	@GetMapping(value="/week")
 	public ResponseEntity <?> getWeek(){
 		HttpHeaders httpHeaders = new HttpHeaders();
 		LocalDate hoje = LocalDate.now();
-		List<Reserva> reservasSemanais = reservaRepo.findByWeek(hoje.with(DayOfWeek.MONDAY), hoje.with(DayOfWeek.SUNDAY));
-		return new ResponseEntity <List<Reserva>>(reservasSemanais, httpHeaders, HttpStatus.OK);
+		List<Aluguel> alugueisSemanais = aluguelRepo.findByWeek(hoje.with(DayOfWeek.MONDAY), hoje.with(DayOfWeek.SUNDAY));
+		return new ResponseEntity <List<Aluguel>>(alugueisSemanais, httpHeaders, HttpStatus.OK);
 	}
 }
