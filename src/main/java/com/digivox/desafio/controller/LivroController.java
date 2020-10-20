@@ -65,7 +65,7 @@ public class LivroController {
 		
 			try {
 				livroRepo.save(newLivro);
-				return new ResponseEntity <>("Criado com sucesso", httpHeaders, HttpStatus.OK);
+				return new ResponseEntity <>("Criado com sucesso", httpHeaders, HttpStatus.CREATED);
 			} catch(DataIntegrityViolationException e){
 				return new ResponseEntity <>("Livro já Cadastrado", httpHeaders, HttpStatus.CONFLICT);
 			} catch(Exception e) {
@@ -86,7 +86,7 @@ public class LivroController {
 			if(doesExist == null)return new ResponseEntity <>("Livro não existente", httpHeaders, HttpStatus.NOT_FOUND);
 			try {
 				livroRepo.save(newLivro);
-				return new ResponseEntity <>("Atualizado com sucesso", httpHeaders, HttpStatus.OK);
+				return new ResponseEntity <>("Atualizado com sucesso", httpHeaders, HttpStatus.CREATED);
 			} catch(DataIntegrityViolationException e){
 				return new ResponseEntity <>("Nome do livro já cadastrado", httpHeaders, HttpStatus.CONFLICT);
 			} catch(Exception e) {
