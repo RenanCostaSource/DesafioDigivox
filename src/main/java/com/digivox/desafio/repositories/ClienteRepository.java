@@ -13,7 +13,7 @@ import com.digivox.desafio.model.Cliente;
  * Arquivo: Interface de Repositório de Clientes
  * 
  * Histórico de Alteraçôes:
- * - 19/10/2020 Renan Costa Criação
+ * - 20/10/2020 Renan Costa Criação
  */
 @Repository
 public interface ClienteRepository extends JpaRepository<Cliente, Integer> {
@@ -21,5 +21,5 @@ public interface ClienteRepository extends JpaRepository<Cliente, Integer> {
 	List<Cliente> findByCPF(String CPF);
 	List<Cliente> findAll();
 	
-	Integer deleteByCPF(String CPF);
+	Integer deleteById(Long id);
 }

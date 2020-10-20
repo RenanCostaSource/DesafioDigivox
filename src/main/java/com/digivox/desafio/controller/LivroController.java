@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -45,12 +46,10 @@ public class LivroController {
 	@GetMapping(value="/{id}")
 	public ResponseEntity <?> getOne(@PathVariable("id") Long id){
 		HttpHeaders httpHeaders = new HttpHeaders();
-		Livro doesExist = livroRepo.findById(id);
-		if(doesExist == null) {
-			return new ResponseEntity <>("Livro não existente", httpHeaders, HttpStatus.NOT_FOUND);
+		Livro livro = livroRepo.findById(id);
+		if(livro == null) {
+			return new ResponseEntity <>("Livro não cadastrado", httpHeaders, HttpStatus.NOT_FOUND);
 		}
-		
-		Livro livro =  livroRepo.findById(id);
 		
 		return new ResponseEntity <Livro>(livro, httpHeaders, HttpStatus.OK);
 	}
@@ -97,7 +96,7 @@ public class LivroController {
 			return new ResponseEntity <>("Informações incompletas", httpHeaders, HttpStatus.BAD_REQUEST);
 		}
 	}
-	
+	@Transactional
 	@DeleteMapping(value="/{id}")
 	public ResponseEntity <?> deleteOne(@PathVariable("id") Long id){
 		HttpHeaders httpHeaders = new HttpHeaders();
@@ -105,7 +104,7 @@ public class LivroController {
 		if(doesExist == null) {
 			return new ResponseEntity <>("Livro não existente", httpHeaders, HttpStatus.NOT_FOUND);
 		}
-		livroRepo.findById(id);
+		livroRepo.deleteById(id);
 		
 		return new ResponseEntity <>("Livro deletado com sucesso", httpHeaders, HttpStatus.OK);
 	}
