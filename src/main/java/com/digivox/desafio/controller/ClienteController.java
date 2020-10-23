@@ -35,7 +35,8 @@ public class ClienteController {
 	@Autowired
 	ClienteRepository clienteRepo;
 	
-	@GetMapping(value="/all")
+	@GetMapping
+	
 	public ResponseEntity <List<Cliente>> getAll(){
 		HttpHeaders httpHeaders = new HttpHeaders();
 		
@@ -49,7 +50,7 @@ public class ClienteController {
 		HttpHeaders httpHeaders = new HttpHeaders();
 		Cliente cliente = clienteRepo.findById(id);
 		if(cliente == null) {
-			return new ResponseEntity <>("Cliente não cadastrado", httpHeaders, HttpStatus.NOT_FOUND);
+			return new ResponseEntity <String>("Cliente não cadastrado", httpHeaders, HttpStatus.NOT_FOUND);
 		}
 		
 		
@@ -61,56 +62,63 @@ public class ClienteController {
 	public ResponseEntity <?> postOne(@RequestBody Cliente newCliente){
 		HttpHeaders httpHeaders = new HttpHeaders();
 		if(newCliente.getId()!=null) {
-			return new ResponseEntity <>("Atributo \"id\" não permitido", httpHeaders, HttpStatus.BAD_REQUEST);
+			return new ResponseEntity <String>("Atributo \"id\" não permitido", httpHeaders, HttpStatus.BAD_REQUEST);
 		}
-		
 		if(newCliente.getNome()!=null && newCliente.getNome()!="" && newCliente.getCPF()!=null && newCliente.getCPF()!="") {
 		
 			try {
 				clienteRepo.save(newCliente);
-				return new ResponseEntity <>("Criado com sucesso", httpHeaders, HttpStatus.CREATED);
+				return new ResponseEntity <String>("Criado com sucesso", httpHeaders, HttpStatus.CREATED);
 			} catch(DataIntegrityViolationException e){
-				return new ResponseEntity <>("Cliente já Cadastrado", httpHeaders, HttpStatus.CONFLICT);
+				return new ResponseEntity <String>("Cliente já Cadastrado", httpHeaders, HttpStatus.CONFLICT);
 			} catch(Exception e) {
 				e.printStackTrace();
-				return new ResponseEntity <>(e.getMessage(), httpHeaders, HttpStatus.INTERNAL_SERVER_ERROR);
+				return new ResponseEntity <String>(e.getMessage(), httpHeaders, HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		}
 		
-		return new ResponseEntity <>("Informações incompletas", httpHeaders, HttpStatus.BAD_REQUEST);
+		return new ResponseEntity <String>("Informações incompletas", httpHeaders, HttpStatus.BAD_REQUEST);
 		
 	}
 	
 	@PutMapping
 	public ResponseEntity <?> updateOne(@RequestBody Cliente newCliente){
 		HttpHeaders httpHeaders = new HttpHeaders();
-		
+		System.out.println(newCliente.getId());
+		System.out.println(newCliente.getNome());
+		System.out.println(newCliente.getCPF());
 		if(newCliente.getNome()!=null && newCliente.getNome()!="" && newCliente.getId()!=null) {
 			Cliente doesExist = clienteRepo.findById(newCliente.getId());
 			if(doesExist == null)return new ResponseEntity <>("Cliente não cadastrado", httpHeaders, HttpStatus.NOT_FOUND);
 			try {
 				clienteRepo.save(newCliente);
-				return new ResponseEntity <>("Atualizado com sucesso", httpHeaders, HttpStatus.CREATED);
+				return new ResponseEntity <String>("Atualizado com sucesso", httpHeaders, HttpStatus.CREATED);
 			} catch(DataIntegrityViolationException e){
-				return new ResponseEntity <>("CPF já cadastrado", httpHeaders, HttpStatus.CONFLICT);
+				return new ResponseEntity <String>("CPF já cadastrado", httpHeaders, HttpStatus.CONFLICT);
 			} catch(Exception e) {
 				e.printStackTrace();
-				return new ResponseEntity <>(e.getMessage(), httpHeaders, HttpStatus.INTERNAL_SERVER_ERROR);
+				return new ResponseEntity <String>(e.getMessage(), httpHeaders, HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		}else {
-			return new ResponseEntity <>("Informações incompletas", httpHeaders, HttpStatus.BAD_REQUEST);
+			return new ResponseEntity <String>("Informações incompletas", httpHeaders, HttpStatus.BAD_REQUEST);
 		}
 	}
 	@Transactional
 	@DeleteMapping(value="/{id}")
 	public ResponseEntity <?> deleteOne(@PathVariable("id") Long id){
+		
 		HttpHeaders httpHeaders = new HttpHeaders();
+		try {
 		Cliente doesExist = clienteRepo.findById(id);
 		if(doesExist == null) {
-			return new ResponseEntity <>("Cliente não cadastrado", httpHeaders, HttpStatus.NOT_FOUND);
+			return new ResponseEntity <String>("Cliente não cadastrado", httpHeaders, HttpStatus.NOT_FOUND);
 		}
 		clienteRepo.deleteById(id);
+		return new ResponseEntity <String>("Cliente deletado com sucesso", httpHeaders, HttpStatus.OK);
+		} catch(Exception e) { 
+			e.printStackTrace();
+			return new ResponseEntity <String>(e.getMessage(), httpHeaders, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 		
-		return new ResponseEntity <>("Cliente deletado com sucesso", httpHeaders, HttpStatus.OK);
 	}
 }

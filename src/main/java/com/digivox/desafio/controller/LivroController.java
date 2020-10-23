@@ -34,7 +34,8 @@ public class LivroController {
 	@Autowired
 	LivroRepository livroRepo;
 	
-	@GetMapping(value="/all")
+	@GetMapping
+	
 	public ResponseEntity <List<Livro>> getAll(){
 		HttpHeaders httpHeaders = new HttpHeaders();
 		
@@ -48,7 +49,7 @@ public class LivroController {
 		HttpHeaders httpHeaders = new HttpHeaders();
 		Livro livro = livroRepo.findById(id);
 		if(livro == null) {
-			return new ResponseEntity <>("Livro não cadastrado", httpHeaders, HttpStatus.NOT_FOUND);
+			return new ResponseEntity <String>("Livro não cadastrado", httpHeaders, HttpStatus.NOT_FOUND);
 		}
 		
 		return new ResponseEntity <Livro>(livro, httpHeaders, HttpStatus.OK);
@@ -58,21 +59,21 @@ public class LivroController {
 	public ResponseEntity <?> postOne(@RequestBody Livro newLivro){
 		HttpHeaders httpHeaders = new HttpHeaders();
 		if(newLivro.getId()!=null) {
-			return new ResponseEntity <>("Atributo \"id\" não permitido", httpHeaders, HttpStatus.BAD_REQUEST);
+			return new ResponseEntity <String>("Atributo \"id\" não permitido", httpHeaders, HttpStatus.BAD_REQUEST);
 		}
 		if(newLivro.getNome()!=null && newLivro.getNome()!="") {
 		
 			try {
 				livroRepo.save(newLivro);
-				return new ResponseEntity <>("Criado com sucesso", httpHeaders, HttpStatus.CREATED);
+				return new ResponseEntity <String>("Criado com sucesso", httpHeaders, HttpStatus.CREATED);
 			} catch(DataIntegrityViolationException e){
-				return new ResponseEntity <>("Livro já Cadastrado", httpHeaders, HttpStatus.CONFLICT);
+				return new ResponseEntity <String>("Livro já Cadastrado", httpHeaders, HttpStatus.CONFLICT);
 			} catch(Exception e) {
 				e.printStackTrace();
-				return new ResponseEntity <>(e.getMessage(), httpHeaders, HttpStatus.INTERNAL_SERVER_ERROR);
+				return new ResponseEntity <String>(e.getMessage(), httpHeaders, HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		}else {
-			return new ResponseEntity <>("Informações incompletas", httpHeaders, HttpStatus.BAD_REQUEST);
+			return new ResponseEntity <String>("Informações incompletas", httpHeaders, HttpStatus.BAD_REQUEST);
 		}	
 	}
 	
@@ -82,18 +83,18 @@ public class LivroController {
 		
 		if(newLivro.getNome()!=null && newLivro.getNome()!="" && newLivro.getId()!=null) {
 			Livro doesExist = livroRepo.findById(newLivro.getId());
-			if(doesExist == null)return new ResponseEntity <>("Livro não existente", httpHeaders, HttpStatus.NOT_FOUND);
+			if(doesExist == null)return new ResponseEntity <String>("Livro não existente", httpHeaders, HttpStatus.NOT_FOUND);
 			try {
 				livroRepo.save(newLivro);
-				return new ResponseEntity <>("Atualizado com sucesso", httpHeaders, HttpStatus.CREATED);
+				return new ResponseEntity <String>("Atualizado com sucesso", httpHeaders, HttpStatus.CREATED);
 			} catch(DataIntegrityViolationException e){
-				return new ResponseEntity <>("Nome do livro já cadastrado", httpHeaders, HttpStatus.CONFLICT);
+				return new ResponseEntity <String>("Nome do livro já cadastrado", httpHeaders, HttpStatus.CONFLICT);
 			} catch(Exception e) {
 				e.printStackTrace();
-				return new ResponseEntity <>(e.getMessage(), httpHeaders, HttpStatus.INTERNAL_SERVER_ERROR);
+				return new ResponseEntity <String>(e.getMessage(), httpHeaders, HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		}else {
-			return new ResponseEntity <>("Informações incompletas", httpHeaders, HttpStatus.BAD_REQUEST);
+			return new ResponseEntity <String>("Informações incompletas", httpHeaders, HttpStatus.BAD_REQUEST);
 		}
 	}
 	@Transactional
@@ -102,10 +103,10 @@ public class LivroController {
 		HttpHeaders httpHeaders = new HttpHeaders();
 		Livro doesExist = livroRepo.findById(id);
 		if(doesExist == null) {
-			return new ResponseEntity <>("Livro não existente", httpHeaders, HttpStatus.NOT_FOUND);
+			return new ResponseEntity <String>("Livro não existente", httpHeaders, HttpStatus.NOT_FOUND);
 		}
 		livroRepo.deleteById(id);
 		
-		return new ResponseEntity <>("Livro deletado com sucesso", httpHeaders, HttpStatus.OK);
+		return new ResponseEntity <String>("Livro deletado com sucesso", httpHeaders, HttpStatus.OK);
 	}
 }

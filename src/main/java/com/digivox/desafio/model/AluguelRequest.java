@@ -10,26 +10,20 @@ package com.digivox.desafio.model;
  */
 public class AluguelRequest {
 	
-	private long id;
 	
-	private int[] dataFinal;// [0] ano [1] mês [2] dia
+	
+	private CharSequence dataFinal;// ano-mês-dia
 	
 	private long clienteId =-1;
 	
 	private long livroId =-1;
 	
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public int[] getDataFinal() {
+	
+	public CharSequence getDataFinal() {
 		return dataFinal;
 	}
 
-	public void setDataFinal(int[] dataFinal) {
+	public void setDataFinal(CharSequence dataFinal) {
 		this.dataFinal = dataFinal;
 	}
 

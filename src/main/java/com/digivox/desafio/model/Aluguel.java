@@ -2,6 +2,7 @@ package com.digivox.desafio.model;
 
 import java.time.LocalDate;
 
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -45,7 +46,8 @@ public class Aluguel {
 	
 	@Column(name = "data_final", columnDefinition = "DATE")
 	private LocalDate data_final;
-	
+	@Column(name = "devolvido",columnDefinition = "DATE")
+	private LocalDate devolvido = null;
 	@ManyToOne
 	private Cliente cliente;
 	
@@ -69,6 +71,12 @@ public class Aluguel {
 	}
 	public void setData_final(LocalDate data_final) {
 		this.data_final = data_final;
+	}
+	public LocalDate getDevolvido() {
+		return devolvido;
+	}
+	public void setDevolvido(LocalDate devolvido) {
+		this.devolvido = devolvido;
 	}
 	public Cliente getCliente() {
 		return cliente;

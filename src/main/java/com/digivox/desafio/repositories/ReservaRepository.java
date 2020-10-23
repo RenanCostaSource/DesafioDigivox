@@ -26,8 +26,20 @@ public interface ReservaRepository extends JpaRepository<Reserva, Integer> {
 	List<Reserva> findByCliente(Cliente cliente);
 	List<Reserva> findByLivro(Livro livro);
 	
-	@Query(value="select * from reserva r where data_inicial >=:segunda and data_inicial <=:domingo or data_final >=:segunda and data_final <=:domingo ",nativeQuery=true)
+	@Query(value="select * from reserva where data_inicial >=:segunda and data_inicial <=:domingo",nativeQuery=true)
+	List<Reserva> findByRentWeek(@Param("segunda")LocalDate segunda,@Param("domingo") LocalDate domingo); 
+	
+	@Query(value="select * from reserva where data_final >=:segunda and data_final <=:domingo ",nativeQuery=true)
+	List<Reserva> findByReturnWeek(@Param("segunda")LocalDate segunda,@Param("domingo") LocalDate domingo); 
+	
+	@Query(value="select * from reserva where data_inicial >=:segunda and data_inicial <=:domingo or data_final >=:segunda and data_final <=:domingo ",nativeQuery=true)
 	List<Reserva> findByWeek(@Param("segunda")LocalDate segunda,@Param("domingo") LocalDate domingo); 
-	 
+	
+	@Query(value="select * from reserva where data_inicial >=:inicio and data_inicial <=:fim and livro_id=:livro or data_final >=:inicio and data_final <=:fim and livro_id=:livro",nativeQuery=true)
+	Reserva findIfBookReserved(@Param("inicio")LocalDate inicio,@Param("fim") LocalDate fim,@Param("livro") Long livro);
+	
+	@Query(value="select * from reserva where data_inicial >=:inicio and data_inicial <=:fim and livro_id=:livro and cliente_id=:cliente or data_final >=:inicio and data_final <=:fim and livro_id=:livro and cliente_id=:cliente",nativeQuery=true)
+	Reserva findIfBookReservedByClient(@Param("inicio")LocalDate inicio,@Param("fim") LocalDate fim,@Param("livro") Long livro,@Param("cliente") Long cliente);
+	
 	Integer deleteById(Long id);
 }

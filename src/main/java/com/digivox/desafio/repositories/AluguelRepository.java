@@ -26,8 +26,16 @@ public interface AluguelRepository extends JpaRepository<Aluguel, Integer> {
 	List<Aluguel> findByCliente(Cliente cliente);
 	List<Aluguel> findByLivro(Livro livro);
 	
-	@Query(value="select * from reserva r where data_inicial >=:segunda and data_inicial <=:domingo or data_final >=:segunda and data_final <=:domingo ",nativeQuery=true)
+	@Query(value="select * from aluguel r where data_inicial >=:segunda and data_inicial <=:domingo",nativeQuery=true)
+	List<Aluguel> findByRentWeek(@Param("segunda")LocalDate segunda,@Param("domingo") LocalDate domingo); 
+	@Query(value="select * from aluguel r where data_final >=:segunda and data_final <=:domingo ",nativeQuery=true)
+	List<Aluguel> findByReturnWeek(@Param("segunda")LocalDate segunda,@Param("domingo") LocalDate domingo); 
+	
+	@Query(value="select * from aluguel r where data_inicial >=:segunda and data_inicial <=:domingo or data_final >=:segunda and data_final <=:domingo ",nativeQuery=true)
 	List<Aluguel> findByWeek(@Param("segunda")LocalDate segunda,@Param("domingo") LocalDate domingo); 
+	
+	@Query(value="select count(*) from aluguel where data_inicial >=:inicio and data_inicial <=:fim and livro_id=:livro and devolvido is null or data_final >=:inicio and data_final <=:fim and livro_id=:livro and devolvido is null",nativeQuery=true)
+	int findIfBookRented(@Param("inicio")LocalDate inicio,@Param("fim") LocalDate fim,@Param("livro") Long livro);
 	
 	Integer deleteById(Long id);
 }

@@ -10,35 +10,30 @@ package com.digivox.desafio.model;
  */
 public class ReservaRequest {
 	
-	private long id;
 	
-	private int[] dataInicial;// [0] ano [1] mês [2] dia
 	
-	private int[] dataFinal;// [0] ano [1] mês [2] dia
+	private CharSequence dataInicial;// ano-mês-dia
+	
+	private CharSequence dataFinal;// ano-mês-dia
 	
 	private long clienteId =-1;
 	
 	private long livroId =-1;
 	
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
-	public int[] getDataInicial() {
+	
+	public CharSequence getDataInicial() {
 		return dataInicial;
 	}
 
-	public void setDataInicial(int[] dataInicial) {
+	public void setDataInicial(CharSequence dataInicial) {
 		this.dataInicial = dataInicial;
 	}
 
-	public int[] getDataFinal() {
+	public CharSequence getDataFinal() {
 		return dataFinal;
 	}
 
-	public void setDataFinal(int[] dataFinal) {
+	public void setDataFinal(CharSequence dataFinal) {
 		this.dataFinal = dataFinal;
 	}
 
